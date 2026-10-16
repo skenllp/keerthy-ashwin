@@ -28,7 +28,7 @@ main{max-width:480px;margin:0 auto;background:var(--ivory);overflow:hidden;outli
 img{display:block;width:100%;height:auto}
 .script{font-family:"Pinyon Script","Snell Roundhand","Apple Chancery",cursive;font-weight:400}
 .it{font-style:italic}
-[data-r]{opacity:0;transform:translateY(16px);transition:opacity 1s ease var(--d,0s),transform 1s ease var(--d,0s)}
+[data-r]{opacity:0;transform:translateY(16px);transition:opacity .6s ease var(--d,0s),transform .6s ease var(--d,0s)}
 [data-r].in{opacity:1;transform:none}
 /* invitation frame: top + stretchable middle strip + bottom, so lace is never distorted */
 .frame{container-type:inline-size;display:grid;grid-template-rows:auto 1fr auto;position:relative}
@@ -186,7 +186,7 @@ function A(el,kf,ms,opt){var o={duration:ms,fill:'forwards',easing:'cubic-bezier
 function reveal(){
  var secs=main.querySelectorAll('.frame,.sec,.cdf'),els=main.querySelectorAll('[data-r]');
  if(mq.matches||!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in')});return}
- secs.forEach(function(s){s.querySelectorAll('[data-r]').forEach(function(e,i){e.style.setProperty('--d',Math.min(i,7)*.09+'s')})});
+ secs.forEach(function(s){s.querySelectorAll('[data-r]').forEach(function(e,i){e.style.setProperty('--d',Math.min(i,7)*.05+'s')})});
  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -5% 0px'});
  els.forEach(function(e){io.observe(e)})}
 var shown=false;function showPage(){if(!shown){shown=true;reveal()}}
@@ -198,7 +198,8 @@ function open(){
  var done=false;
  function go(ms){if(done)return;done=true;showPage();fadeOut(ms).then(finish)}   /* crossfade video -> invitation */
  if(mq.matches||!canAnim){go(350);return}       /* reduced motion: no video, simple fade */
- vid.addEventListener('ended',function(){go(1000)},{once:true});
+ vid.addEventListener('ended',function(){go(800)},{once:true});
+ vid.addEventListener('timeupdate',function(){if(!shown&&vid.duration&&vid.currentTime>vid.duration-1.7)showPage()});   /* text is already in place under the video when it fades */
  vid.addEventListener('error',function(){go(500)},{once:true});
  var src=vid.querySelector('source');if(src)src.addEventListener('error',function(){go(500)},{once:true});   /* unsupported / missing file */
  if(vid.networkState===3||vid.error||!vid.canPlayType('video/mp4')){go(500);return}   /* browser cannot play the file */
