@@ -91,6 +91,7 @@ h2{font-weight:500;font-size:clamp(28px,8.5vw,36px);line-height:1.1;color:var(--
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01s!important;transition-delay:0s!important;animation:none!important}[data-r]{opacity:1;transform:none}html{scroll-behavior:auto}}
 </style></head>
 <body class="lock">
+<audio id="bg-music" src="music.mp3" loop preload="auto" aria-hidden="true" style="display:none"></audio>
 <button id="env" type="button" aria-label="Open the wedding invitation">
  <span class="stg">
   <img id="ev-b" src="images/backing.webp" alt="" width="720" height="1279" decoding="async">
@@ -181,7 +182,7 @@ function reveal(){
  secs.forEach(function(s){s.querySelectorAll('[data-r]').forEach(function(e,i){e.style.setProperty('--d',Math.min(i,7)*.09+'s')})});
  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -5% 0px'});
  els.forEach(function(e){io.observe(e)})}
-function finish(){window.scrollTo(0,0);body.classList.remove('lock');env.remove();main.focus({preventScroll:true});reveal();startCountdown()}
+function finish(){window.scrollTo(0,0);body.classList.remove('lock');env.remove();main.focus({preventScroll:true});reveal();startCountdown();playMusic()}
 function fadeOut(ms){return canAnim?A(env,[{opacity:1},{opacity:0}],ms,{easing:'ease'}):Promise.resolve()}
 async function open(){
  if(started)return;started=true;env.classList.add('busy');env.disabled=true;
@@ -203,6 +204,9 @@ async function open(){
  }catch(e){}
  finish()}
 env.addEventListener('click',open);
+/* music */
+var music=$('#bg-music');
+function playMusic(){if(music)music.play().catch(function(){})}
 /* countdown */
 var TARGET=Date.parse('2027-01-20T11:00:00+05:30'),U={},prev={},timer=0,ended=false;
 ['d','h','m','s'].forEach(function(k){U[k]=$('[data-u="'+k+'"]')});
