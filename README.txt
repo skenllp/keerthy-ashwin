@@ -1,15 +1,11 @@
-KEERTHY & ASHWIN — WEDDING INVITATION (V3.2)
-Static site, no build step. Upload the whole folder to any host (Netlify, Vercel, GitHub Pages, cPanel).
+KEERTHY & ASHWIN — WEDDING INVITATION (V4)
+Static site, no build step. Upload the whole folder to Vercel / any host. Domain is set to https://keerthy-ashwin.vercel.app in the canonical, og:url, og:image and twitter:image tags.
 
-DOMAIN: set to https://keerthy-ashwin.vercel.app in the canonical, og:url, og:image and twitter:image tags. If the domain ever changes, update those four tags in index.html. Deploy the whole folder so /images/og.jpg is reachable.
-
-CHANGELOG V2 -> V3
-- Envelope: Web Animations timeline (each step waits for the previous one to finish), seal lifts, flaps open backward in 3D and drop behind the card, card rises and lands exactly on the invitation. Art is pre-decoded; reduced-motion = simple fade; keyboard accessible.
-- Envelope backing re-exported at 720px (was 64px, pixelated).
-- Invitation frame: split into top / stretchable strip / bottom so the lace is never stretched or repeated; text fits the oval at natural proportions; venue lines moved just below the frame.
-- Illustrations, garland, lace divider re-exported with true transparency (no white/cream boxes, no blend-mode hacks).
-- Countdown: explicit element references, one timer aligned to the second, stops at zero, paused when the tab is hidden, equal-width columns (no layout shift).
-- Reception: consistent spacing, full-width lace dividers, table placed before the closing message.
-- Open Graph / Twitter / canonical tags with absolute-URL placeholders; 1200x630 preview image.
-- Footer: the row of small icons is the Kerala motifs strip (lamp, palms, houseboat, jasmine garland, swans, floral arch). To remove it, delete the <img class="mot"...> line in index.html.
-- OG preview image: images/og.jpg (1200x630). Walking animation removed; couple is static.
+CHANGELOG V3.3 -> V4
+- Opening: the CSS envelope was replaced by the supplied Firefly video (video/opening.mp4, 720x1280, H.264, ~1.7 MB, faststart). Poster = its exact first frame (images/opening-poster.jpg). Guest taps "Tap to open" -> video plays (and the music starts in the same tap) -> on the last frame the page crossfades in. Fallbacks: blocked/failed/unsupported video, or reduced-motion, fade straight from the poster to the invitation. The video is never stretched (contain, centered, soft blurred backdrop on non-9:16 screens).
+- Countdown: new ivory floral lace frame; numbers and text in deep burgundy #5E1F30, kept inside the empty centre. Same live countdown to 20 Jan 2027, 11:00 AM IST.
+- Couple: replaced with the faceless burgundy portrait (reception section), background made transparent.
+- Wedding venue: Contour illustration. Reception venue: Chakolas Pavilion illustration (above its directions button).
+- Houseboat: old houseboat illustration removed, and the houseboat icon removed from the small Kerala motifs strip. NOTE: images/og.jpg (WhatsApp/social preview you supplied earlier) still shows a houseboat; it is not displayed on the page itself.
+- Removed unused files: envelope flaps/backing/seal/card images, old backwaters + old couple images.
+- Your music (music.mp3, #music-btn) is unchanged.
