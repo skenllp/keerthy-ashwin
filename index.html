@@ -89,9 +89,15 @@ h2{font-weight:500;font-size:clamp(28px,8.5vw,36px);line-height:1.1;color:var(--
 @keyframes pl{50%{opacity:.4}}
 #env:focus-visible .stg{outline:2px solid var(--wine);outline-offset:8px}
 @media (prefers-reduced-motion:reduce){*{transition-duration:.01s!important;transition-delay:0s!important;animation:none!important}[data-r]{opacity:1;transform:none}html{scroll-behavior:auto}}
+/* music toggle button */
+#music-btn{position:fixed;bottom:calc(22px + env(safe-area-inset-bottom,0px));right:18px;z-index:10;width:44px;height:44px;border-radius:50%;border:1.5px solid var(--gold);background:rgba(248,244,236,.88);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);color:var(--wine);display:none;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 12px rgba(94,31,48,.18);transition:background .2s,color .2s;-webkit-tap-highlight-color:transparent}
+#music-btn:hover{background:var(--wine);color:var(--ivory)}
+#music-btn:focus-visible{outline:2px solid var(--wine);outline-offset:3px}
+#music-btn svg{width:20px;height:20px;flex-shrink:0;pointer-events:none}
+@keyframes music-spin{to{transform:rotate(360deg)}}
+#music-btn.playing .note{animation:music-spin 3s linear infinite;transform-origin:50% 50%}
 </style></head>
 <body class="lock">
-<audio id="bg-music" src="music.mp3" loop preload="auto" aria-hidden="true" style="display:none"></audio>
 <button id="env" type="button" aria-label="Open the wedding invitation">
  <span class="stg">
   <img id="ev-b" src="images/backing.webp" alt="" width="720" height="1279" decoding="async">
@@ -165,6 +171,10 @@ h2{font-weight:500;font-size:clamp(28px,8.5vw,36px);line-height:1.1;color:var(--
  <img class="foot" src="images/lace-divider.webp" width="1300" height="434" loading="lazy" decoding="async" alt="">
 </section>
 </main>
+<button id="music-btn" type="button" aria-label="Pause music">
+ <!-- music note icon (playing state) -->
+ <svg class="note" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 3v11.26A4 4 0 1 0 11 18V7h4V3H9Z"/></svg>
+</button>
 <script>
 (function(){
 'use strict';
@@ -182,10 +192,11 @@ function reveal(){
  secs.forEach(function(s){s.querySelectorAll('[data-r]').forEach(function(e,i){e.style.setProperty('--d',Math.min(i,7)*.09+'s')})});
  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}})},{threshold:.12,rootMargin:'0px 0px -5% 0px'});
  els.forEach(function(e){io.observe(e)})}
-function finish(){window.scrollTo(0,0);body.classList.remove('lock');env.remove();main.focus({preventScroll:true});reveal();startCountdown();playMusic()}
+function finish(){window.scrollTo(0,0);body.classList.remove('lock');env.remove();main.focus({preventScroll:true});reveal();startCountdown()}
 function fadeOut(ms){return canAnim?A(env,[{opacity:1},{opacity:0}],ms,{easing:'ease'}):Promise.resolve()}
 async function open(){
  if(started)return;started=true;env.classList.add('busy');env.disabled=true;
+ playMusic();
  await ready;
  if(mq.matches||!canAnim){await fadeOut(350);finish();return}
  try{
@@ -204,9 +215,26 @@ async function open(){
  }catch(e){}
  finish()}
 env.addEventListener('click',open);
-/* music */
-var music=$('#bg-music');
-function playMusic(){if(music)music.play().catch(function(){})}
+/* music — created in JS so play() is called synchronously within the click gesture */
+var music=new Audio('music.mp3');
+music.loop=true;
+var musicBtn=document.getElementById('music-btn');
+function setMusicBtn(playing){
+ if(!musicBtn)return;
+ musicBtn.setAttribute('aria-label',playing?'Pause music':'Play music');
+ if(playing)musicBtn.classList.add('playing');else musicBtn.classList.remove('playing');
+}
+function playMusic(){
+ music.play().catch(function(){});
+ setMusicBtn(true);
+ if(musicBtn)musicBtn.style.display='flex';
+}
+if(musicBtn){
+ musicBtn.addEventListener('click',function(){
+  if(music.paused){music.play().catch(function(){});setMusicBtn(true);}
+  else{music.pause();setMusicBtn(false);}
+ });
+}
 /* countdown */
 var TARGET=Date.parse('2027-01-20T11:00:00+05:30'),U={},prev={},timer=0,ended=false;
 ['d','h','m','s'].forEach(function(k){U[k]=$('[data-u="'+k+'"]')});
